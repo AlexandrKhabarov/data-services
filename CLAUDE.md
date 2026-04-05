@@ -10,32 +10,34 @@ All commands run from the `backend/` directory unless stated otherwise.
 # Install dev dependencies
 pip install -e '.[dev]'
 
+# Format code
+make fmt
+
+# Lint and type check
+make lint
+
 # Run tests (uses in-memory SQLite, no Postgres needed)
-pytest
+make test
 
 # Run a single test file or test
 pytest tests/test_analyze.py
 pytest tests/test_analyze.py::test_submit_job
 
-# Type checking
-mypy
-
-# Lint and format
-ruff check . && ruff format .
+# Build wheel
+make build
 
 # Run locally (Postgres + FastAPI at localhost:8000)
-docker-compose up                   # from repo root
+docker compose up                   # from repo root
 alembic upgrade head                # apply migrations manually if needed
 ```
 
 ## After finishing a feature
 
-Always run the following checks before considering a task done:
+Always run the following before considering a task done:
 
 ```bash
-ruff check . && ruff format --check .
-mypy app
-pytest --tb=short -q
+make lint
+make test
 ```
 
 Fix all failures before stopping.
