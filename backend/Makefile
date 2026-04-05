@@ -1,13 +1,13 @@
 .PHONY: fmt lint test build
 
 fmt:
-	python -m ruff format .
+	uv run ruff format .
 
 lint:
-	python -m ruff check . && python -m ruff format --check . && python -m mypy app
+	uv run ruff check . && uv run ruff format --check . && uv run mypy app
 
 test:
-	python -m pytest --tb=short -q
+	uv run pytest --tb=short -q
 
 build:
-	python -m build --wheel
+	uv build --wheel

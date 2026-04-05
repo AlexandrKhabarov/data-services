@@ -7,8 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 All commands run from the `backend/` directory unless stated otherwise.
 
 ```bash
-# Install dev dependencies
-pip install -e '.[dev]'
+# Install all dependencies (creates .venv automatically)
+uv sync
 
 # Format code
 make fmt
@@ -20,8 +20,8 @@ make lint
 make test
 
 # Run a single test file or test
-pytest tests/test_analyze.py
-pytest tests/test_analyze.py::test_submit_job
+uv run pytest tests/test_analyze.py
+uv run pytest tests/test_analyze.py::test_submit_job
 
 # Build wheel
 make build

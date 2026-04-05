@@ -13,14 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
-          python-version: "3.11"
-          cache: pip
-          cache-dependency-path: backend/pyproject.toml
+          enable-caching: true
 
       - name: Install dependencies
-        run: pip install -e '.[dev]'
+        run: uv sync --frozen
         working-directory: backend
 
       - run: make lint
@@ -32,14 +30,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
-          python-version: "3.11"
-          cache: pip
-          cache-dependency-path: backend/pyproject.toml
+          enable-caching: true
 
       - name: Install dependencies
-        run: pip install -e '.[dev]'
+        run: uv sync --frozen
         working-directory: backend
 
       - run: make test
