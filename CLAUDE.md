@@ -28,6 +28,18 @@ docker-compose up                   # from repo root
 alembic upgrade head                # apply migrations manually if needed
 ```
 
+## After finishing a feature
+
+Always run the following checks before considering a task done:
+
+```bash
+ruff check . && ruff format --check .
+mypy app
+pytest --tb=short -q
+```
+
+Fix all failures before stopping.
+
 ## Architecture
 
 This is a FastAPI proxy service that routes photo-analysis requests through a pool of real Telegram user accounts to a target bot (`@mycommentinst_bot`).
