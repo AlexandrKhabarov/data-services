@@ -21,7 +21,7 @@ jobs:
           enable-caching: true
 
       - name: Install dependencies
-        run: uv sync --frozen
+        run: uv sync --frozen --all-extras
         working-directory: backend
 
       - run: make lint
@@ -38,7 +38,7 @@ jobs:
           enable-caching: true
 
       - name: Install dependencies
-        run: uv sync --frozen
+        run: uv sync --frozen --all-extras
         working-directory: backend
 
       - run: make test
