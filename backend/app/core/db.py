@@ -1,3 +1,5 @@
+from collections.abc import Generator
+
 from sqlmodel import Session, SQLModel, create_engine
 
 from app.core.config import settings
@@ -17,7 +19,7 @@ def init_db() -> None:
     SQLModel.metadata.create_all(engine)
 
 
-def get_db():
+def get_db() -> Generator[Session, None, None]:
     """FastAPI dependency that yields a DB session."""
     with Session(engine) as session:
         yield session

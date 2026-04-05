@@ -1,6 +1,6 @@
-from typing import Generator
+from collections.abc import Generator
 
-from fastapi import Depends, HTTPException, Request, Security, status
+from fastapi import HTTPException, Request, Security, status
 from fastapi.security import APIKeyHeader
 from sqlmodel import Session
 
@@ -42,4 +42,5 @@ def require_admin_key(api_key: str = Security(_api_key_header)) -> None:
 
 
 def get_account_manager(request: Request) -> AccountManager:
-    return request.app.state.account_manager
+    manager: AccountManager = request.app.state.account_manager
+    return manager

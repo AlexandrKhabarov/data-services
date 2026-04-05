@@ -48,7 +48,11 @@ class AccountManager:
         async with self._lock:
             self._clients[account.id] = client
             self._in_flight[account.id] = 0
-        logger.info("Account %s added to pool (%d total)", account.phone_number, len(self._clients))
+        logger.info(
+            "Account %s added to pool (%d total)",
+            account.phone_number,
+            len(self._clients),
+        )
 
     async def remove_account(self, account_id: uuid.UUID) -> None:
         async with self._lock:
@@ -86,7 +90,7 @@ class AccountManager:
             )
 
     async def release(self, account_id: uuid.UUID) -> None:
-        """Mark an account as free again. Safe to call even if the account was removed."""
+        """Mark an account as free again. Safe to call even if removed."""
         async with self._lock:
             if account_id in self._in_flight:
                 self._in_flight[account_id] = 0

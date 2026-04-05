@@ -55,7 +55,7 @@ class TelegramAccountClient:
         loop = asyncio.get_running_loop()
         future: asyncio.Future[str] = loop.create_future()
 
-        @self._client.on(events.NewMessage(from_users=target_bot))
+        @self._client.on(events.NewMessage(from_users=target_bot))  # type: ignore[untyped-decorator]
         async def _handler(event: events.NewMessage.Event) -> None:
             if not future.done():
                 future.set_result(event.raw_text or "")
@@ -64,7 +64,9 @@ class TelegramAccountClient:
             bio = io.BytesIO(photo_bytes)
             bio.name = filename  # Telethon uses .name as the filename hint
             await self._client.send_file(target_bot, bio)
-            logger.debug("Photo sent to %s; awaiting reply (timeout=%ds)", target_bot, timeout)
+            logger.debug(
+                "Photo sent to %s; awaiting reply (timeout=%ds)", target_bot, timeout
+            )
 
             reply = await asyncio.wait_for(future, timeout=timeout)
             logger.debug("Reply received from %s", target_bot)

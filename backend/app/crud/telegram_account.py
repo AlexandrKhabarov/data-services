@@ -1,6 +1,5 @@
 import uuid
 from datetime import datetime, timedelta
-from typing import Optional
 
 from sqlmodel import Session, select
 
@@ -10,11 +9,11 @@ from app.models.telegram_account import AccountStatus, TelegramAccount
 from app.schemas.account import AccountCreate, AccountUpdate
 
 
-def get(db: Session, account_id: uuid.UUID) -> Optional[TelegramAccount]:
+def get(db: Session, account_id: uuid.UUID) -> TelegramAccount | None:
     return db.get(TelegramAccount, account_id)
 
 
-def get_by_phone(db: Session, phone: str) -> Optional[TelegramAccount]:
+def get_by_phone(db: Session, phone: str) -> TelegramAccount | None:
     return db.exec(
         select(TelegramAccount).where(TelegramAccount.phone_number == phone)
     ).first()
@@ -27,16 +26,20 @@ def get_all(db: Session) -> list[TelegramAccount]:
 def get_active(db: Session) -> list[TelegramAccount]:
     return list(
         db.exec(
-            select(TelegramAccount).where(TelegramAccount.status == AccountStatus.active)
+            select(TelegramAccount).where(
+                TelegramAccount.status == AccountStatus.active
+            )
         ).all()
     )
 
 
-def get_least_loaded_active(db: Session) -> Optional[TelegramAccount]:
+def get_least_loaded_active(db: Session) -> TelegramAccount | None:
     """Return the active account with the oldest last_used_at (round-robin)."""
     accounts = list(
         db.exec(
-            select(TelegramAccount).where(TelegramAccount.status == AccountStatus.active)
+            select(TelegramAccount).where(
+                TelegramAccount.status == AccountStatus.active
+            )
         ).all()
     )
     if not accounts:
@@ -60,7 +63,9 @@ def create(db: Session, data: AccountCreate) -> TelegramAccount:
     return account
 
 
-def update(db: Session, account: TelegramAccount, data: AccountUpdate) -> TelegramAccount:
+def update(
+    db: Session, account: TelegramAccount, data: AccountUpdate
+) -> TelegramAccount:
     if data.status is not None:
         account.status = data.status
     if data.session_string is not None:
@@ -102,7 +107,7 @@ def restore_expired_rate_limits(db: Session) -> int:
         db.exec(
             select(TelegramAccount).where(
                 TelegramAccount.status == AccountStatus.rate_limited,
-                TelegramAccount.rate_limited_until <= now,
+                TelegramAccount.rate_limited_until <= now,  # type: ignore[operator]
             )
         ).all()
     )

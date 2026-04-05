@@ -1,10 +1,7 @@
 import uuid
 from unittest.mock import AsyncMock, patch
 
-import pytest
-
 from app.models.telegram_account import AccountStatus
-
 
 _ACCOUNT_PAYLOAD = {
     "phone_number": "+12025550100",
@@ -33,7 +30,7 @@ def test_list_accounts_empty(client, admin_headers):
 
 def test_list_accounts_requires_admin_key(client):
     response = client.get("/api/v1/accounts")
-    assert response.status_code == 403
+    assert response.status_code == 401
 
 
 def test_add_account_created(client, admin_headers):

@@ -65,7 +65,9 @@ def get_account(
 ) -> AccountRead:
     account = crud.telegram_account.get(db, account_id)
     if account is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Account not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Account not found"
+        )
     return AccountRead.model_validate(account)
 
 
@@ -83,7 +85,9 @@ async def update_account(
 ) -> AccountRead:
     account = crud.telegram_account.get(db, account_id)
     if account is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Account not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Account not found"
+        )
 
     updated = crud.telegram_account.update(db, account, data)
 
@@ -113,7 +117,9 @@ async def delete_account(
 ) -> None:
     account = crud.telegram_account.get(db, account_id)
     if account is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Account not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Account not found"
+        )
 
     await account_manager.remove_account(account_id)
     crud.telegram_account.delete(db, account)

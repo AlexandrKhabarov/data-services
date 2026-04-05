@@ -44,7 +44,7 @@ async def submit_analysis(
         raise HTTPException(
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
             detail=f"Unsupported media type '{photo.content_type}'. "
-                   f"Allowed: {', '.join(sorted(_ALLOWED_CONTENT_TYPES))}",
+            f"Allowed: {', '.join(sorted(_ALLOWED_CONTENT_TYPES))}",
         )
 
     photo_bytes = await photo.read()

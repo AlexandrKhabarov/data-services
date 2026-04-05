@@ -1,13 +1,13 @@
 import uuid
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from sqlmodel import Session
 
 from app.models.analysis_job import AnalysisJob, JobStatus
 
 
-def get(db: Session, job_id: uuid.UUID) -> Optional[AnalysisJob]:
+def get(db: Session, job_id: uuid.UUID) -> AnalysisJob | None:
     return db.get(AnalysisJob, job_id)
 
 
@@ -19,9 +19,7 @@ def create(db: Session, photo_bytes: bytes, photo_filename: str) -> AnalysisJob:
     return job
 
 
-def set_processing(
-    db: Session, job_id: uuid.UUID, account_id: uuid.UUID
-) -> None:
+def set_processing(db: Session, job_id: uuid.UUID, account_id: uuid.UUID) -> None:
     job = db.get(AnalysisJob, job_id)
     if job:
         job.status = JobStatus.processing

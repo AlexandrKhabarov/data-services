@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import uuid
 
@@ -54,16 +53,14 @@ async def process_job(job_id: uuid.UUID, account_manager: AccountManager) -> Non
             crud.telegram_account.update_last_used(db, account_id)
         logger.info("Job %s completed", job_id)
 
-    except asyncio.TimeoutError:
-        error = (
-            f"No reply from bot within {settings.TELEGRAM_REPLY_TIMEOUT_SECONDS}s"
-        )
+    except TimeoutError:
+        error = f"No reply from bot within {settings.TELEGRAM_REPLY_TIMEOUT_SECONDS}s"
         logger.warning("Job %s timed out", job_id)
         with Session(engine) as db:
             crud.analysis_job.fail(db, job_id, error)
 
     except Exception as exc:
-        # Import here to avoid hard dependency at module level if telethon isn't installed
+        # Lazy import to avoid hard dependency at module level
         try:
             from telethon.errors import FloodWaitError
 
@@ -75,10 +72,8 @@ async def process_job(job_id: uuid.UUID, account_manager: AccountManager) -> Non
                     crud.analysis_job.fail(
                         db, job_id, f"Rate limited — retry after {exc.seconds}s"
                     )
-                    crud.telegram_account.mark_rate_limited(
-                        db, account_id, exc.seconds
-                    )
-                # Remove from pool; it will be re-added if status is restored via admin API
+                    crud.telegram_account.mark_rate_limited(db, account_id, exc.seconds)
+                # Remove from pool; re-added if status is restored via admin API
                 await account_manager.remove_account(account_id)
                 return  # skip the release below — account was already removed
         except ImportError:

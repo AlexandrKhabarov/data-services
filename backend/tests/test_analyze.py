@@ -1,10 +1,7 @@
 import uuid
 from unittest.mock import AsyncMock, patch
 
-import pytest
-
 from app.models.analysis_job import JobStatus
-
 
 FAKE_PHOTO = b"\xff\xd8\xff\xe0" + b"\x00" * 100  # minimal JPEG magic bytes
 
@@ -34,7 +31,7 @@ def test_submit_analysis_requires_api_key(client):
         "/api/v1/analyze",
         files={"photo": ("face.jpg", FAKE_PHOTO, "image/jpeg")},
     )
-    assert response.status_code == 403
+    assert response.status_code == 401
 
 
 def test_submit_analysis_rejects_wrong_content_type(client, admin_headers):
@@ -83,9 +80,7 @@ def test_get_job_returns_pending(client, admin_headers):
 
 
 def test_get_job_404_for_unknown(client, admin_headers):
-    response = client.get(
-        f"/api/v1/analyze/{uuid.uuid4()}", headers=admin_headers
-    )
+    response = client.get(f"/api/v1/analyze/{uuid.uuid4()}", headers=admin_headers)
     assert response.status_code == 404
 
 
@@ -102,4 +97,4 @@ def test_get_job_requires_api_key(client, admin_headers):
     job_id = post.json()["job_id"]
 
     response = client.get(f"/api/v1/analyze/{job_id}")
-    assert response.status_code == 403
+    assert response.status_code == 401

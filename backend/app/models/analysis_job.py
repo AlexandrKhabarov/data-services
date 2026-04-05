@@ -1,13 +1,13 @@
 import enum
 import uuid
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
-from sqlalchemy import Column, JSON, LargeBinary
+from sqlalchemy import JSON, Column, LargeBinary
 from sqlmodel import Field, SQLModel
 
 
-class JobStatus(str, enum.Enum):
+class JobStatus(enum.StrEnum):
     pending = "pending"
     processing = "processing"
     completed = "completed"
@@ -24,12 +24,12 @@ class AnalysisJob(SQLModel, table=True):
     photo_bytes: bytes = Field(sa_column=Column(LargeBinary, nullable=False))
     photo_filename: str
     # Parsed response from the Telegram bot
-    result: Optional[dict[str, Any]] = Field(
+    result: dict[str, Any] | None = Field(
         default=None, sa_column=Column(JSON, nullable=True)
     )
-    error_message: Optional[str] = Field(default=None)
-    telegram_account_id: Optional[uuid.UUID] = Field(
+    error_message: str | None = Field(default=None)
+    telegram_account_id: uuid.UUID | None = Field(
         default=None, foreign_key="telegram_accounts.id"
     )
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    completed_at: Optional[datetime] = Field(default=None)
+    completed_at: datetime | None = Field(default=None)

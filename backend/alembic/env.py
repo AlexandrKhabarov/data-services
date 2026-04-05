@@ -1,13 +1,12 @@
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
 
-from app.core.config import settings
-
 # Import all models so SQLModel / Alembic can discover their tables
 import app.models  # noqa: F401
+from alembic import context
+from app.core.config import settings
 
 alembic_config = context.config
 alembic_config.set_main_option("sqlalchemy.url", settings.SQLALCHEMY_DATABASE_URI)

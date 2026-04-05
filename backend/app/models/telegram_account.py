@@ -1,12 +1,11 @@
 import enum
 import uuid
 from datetime import datetime
-from typing import Optional
 
 from sqlmodel import Field, SQLModel
 
 
-class AccountStatus(str, enum.Enum):
+class AccountStatus(enum.StrEnum):
     active = "active"
     rate_limited = "rate_limited"
     inactive = "inactive"
@@ -24,6 +23,6 @@ class TelegramAccount(SQLModel, table=True):
     status: AccountStatus = Field(default=AccountStatus.active)
     # In-memory load balancing uses AccountManager; this column persists
     # last_used_at for round-robin ordering across restarts.
-    last_used_at: Optional[datetime] = Field(default=None)
-    rate_limited_until: Optional[datetime] = Field(default=None)
+    last_used_at: datetime | None = Field(default=None)
+    rate_limited_until: datetime | None = Field(default=None)
     created_at: datetime = Field(default_factory=datetime.utcnow)

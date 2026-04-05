@@ -8,6 +8,7 @@ test engine before any app code touches it.
 The FastAPI lifespan is NOT triggered (we create TestClient without the
 context manager), so no real Telegram connections are attempted.
 """
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
@@ -52,6 +53,7 @@ def client(patch_engine):
     TestClient without context manager → lifespan does NOT run.
     We manually set app.state.account_manager so the dependency works.
     """
+
     def override_get_db():
         with Session(patch_engine) as session:
             yield session

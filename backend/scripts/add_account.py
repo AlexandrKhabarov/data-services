@@ -11,6 +11,7 @@ Requirements:
     - You need a Telegram API ID + hash from https://my.telegram.org.
     - Run this once per account; it handles interactive OTP / 2FA.
 """
+
 import argparse
 import asyncio
 
